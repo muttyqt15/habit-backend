@@ -45,11 +45,9 @@ class LoginView(views.APIView):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
             user = User.objects.get(email=request.data.get("email"))
-            print(user)
             refresh = RefreshToken.for_user(user)
-            access_token = refresh.token
+            access_token = str(refresh.access_token)
             refresh_token = str(refresh)
-            print(access_token, refresh_token)
             return response.Response(
                 {
                     "message": "User logged in successfully.",

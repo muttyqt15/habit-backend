@@ -1,5 +1,7 @@
 from api.authentication.models import User
 from rest_framework import serializers
+from django.contrib.auth import authenticate
+from django.core.exceptions import ValidationError
 
 
 # Serializer for validating and processing user data
@@ -38,28 +40,23 @@ class SignUpProviderSerializer(serializers.ModelSerializer):
         return user
 
 
-from django.contrib.auth import authenticate
-from rest_framework import serializers
-from django.core.exceptions import ValidationError
-
-
 class LoginSerializer(serializers.Serializer):
-    email = serializers.EmailField()
+    username = serializers.CharField(write_only=True)
     password = serializers.CharField(write_only=True)
 
     def validate(self, data):
-        email = data.get("email")
+        username = data.get("username")
         password = data.get("password")
 
-        # Ensure both email and password are provided
-        if not email or not password:
-            raise serializers.ValidationError("Email and password are required.")
+        # Ensure both username and password are provided
+        if not username or not password:
+            raise serializers.ValidationError("Username and password are required.")
 
         # Try to authenticate the user
-        user = authenticate(email=email, password=password)
-
+        user = authenticate(username=username, password=password)
+        
         if user is None:
-            raise serializers.ValidationError("Invalid email or password.")
+            raise serializers.ValidationError("Invalid username or password.")
 
         data["user"] = user
         return data
