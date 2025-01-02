@@ -1,0 +1,5 @@
+class Provider:
+    GOOGLE = "GOOGLE"
+    GITHUB = "GITHUB"
+    DISCORD = "DISCORD"
+    NO_PROVIDER = "NO_PROVIDER"
